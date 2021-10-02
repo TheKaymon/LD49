@@ -32,7 +32,7 @@ public class DeathZone : MonoBehaviour
     private void OnTriggerExit2D( Collider2D collider )
     {
         Debug.Log("Leaving Death Zone!");
-        if ( collider.CompareTag("Piece") )
+        if ( collider.CompareTag("Piece") && collider.transform.position.y < transform.position.y)
         {
             collider.GetComponent<Piece>().Destruction(.5f);
         }

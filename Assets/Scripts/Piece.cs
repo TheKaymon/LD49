@@ -14,12 +14,12 @@ public class Piece : MonoBehaviour
     [HideInInspector]
     public bool released;
 
-    private float currentAngle;
+    public float currentAngle;
     private float startAngle;
     private float targetAngle;
     private int rotating = 0;
 
-    private const float rotateSpeed = 100f;
+    private const float rotateSpeed = 270;
     private const float quarterTurn = 90f;
 
 
@@ -66,6 +66,7 @@ public class Piece : MonoBehaviour
 
     public void Destruction( float delay )
     {
+        GameManager.level.loadZone.PieceDestroyed(this);
         Destroy(gameObject, delay);
     }
 }

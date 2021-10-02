@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Level : MonoBehaviour
 {
@@ -8,11 +9,21 @@ public class Level : MonoBehaviour
     public LoadingDock loadZone;
     public Transform scoringZoneParent;
     public LayerMask pieceMask;
+    public GameObject levelEndUI;
+    public TextMeshProUGUI scoreText;
     private List<BoxCollider2D> scoringZones;
+    private IEnumerator checkCoroutine;
+
+    private void Awake()
+    {
+        GameManager.level = this;
+
+    }
 
     // Start is called before the first frame update
     void Start()
     {
+        checkCoroutine = CheckForMotion();
         scoringZones = new List<BoxCollider2D>();
 
         for ( int i = 0; i < scoringZoneParent.childCount; i++ )
@@ -27,8 +38,20 @@ public class Level : MonoBehaviour
         
     }
 
+    public void LastPieceDropped()
+    {
+        Debug.Log("Last Piece Dropped");
+        //for ( int i = 0; i < loadZone.droppedPieces.Count; i++ )
+        //{
+        //    loadZone.droppedPieces[i].body2D.constraints = RigidbodyConstraints2D.None;
+        //}
+        StartCoroutine(checkCoroutine);
+    }
+
     public void EndLevel()
     {
+        StopCoroutine(checkCoroutine);
+
         Piece p;
         List<Piece> countedPieces = new List<Piece>();
         int hits = 0;
@@ -58,21 +81,42 @@ public class Level : MonoBehaviour
 
             score *= 2;
         }
-
+        scoreText.SetText($"Score: {totalScore}");
+        levelEndUI.SetActive(true);
         Debug.Log($"Level Score is: {totalScore}");
     }
 
-    private void OnTriggerEnter2D( Collider2D collider )
+    private IEnumerator CheckForMotion()
     {
-        //Debug.Log("Triggered Level End Zone!");
-        //if ( collider.CompareTag("Piece") )
-        //{
-        //    collider.GetComponent<Piece>().Destruction(.5f);
-        //}
-        if ( collider.CompareTag("Player") )
+        yield return new WaitForSeconds(1f);
+        while ( true )
         {
-            if( player.currentPiece == null && loadZone.PiecesRemaining == 0 )
+            bool movement = false;
+            for ( int i = 0; i < loadZone.droppedPieces.Count; i++ )
+            {
+                if( loadZone.droppedPieces[i].body2D.velocity.sqrMagnitude > 0.01f 
+                    || loadZone.droppedPieces[i].body2D.angularVelocity > 0.1f  )
+                {
+                    movement = true;
+                }
+            }
+            if ( !movement )
                 EndLevel();
+            yield return new WaitForSeconds(0.5f);
         }
     }
+
+    //private void OnTriggerEnter2D( Collider2D collider )
+    //{
+    //    //Debug.Log("Triggered Level End Zone!");
+    //    //if ( collider.CompareTag("Piece") )
+    //    //{
+    //    //    collider.GetComponent<Piece>().Destruction(.5f);
+    //    //}
+    //    if ( collider.CompareTag("Player") )
+    //    {
+    //        if( player.currentPiece == null && loadZone.PiecesRemaining == 0 )
+    //            EndLevel();
+    //    }
+    //}
 }
