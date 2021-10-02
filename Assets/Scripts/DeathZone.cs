@@ -19,13 +19,22 @@ public class DeathZone : MonoBehaviour
     private void OnTriggerEnter2D( Collider2D collider )
     {
         Debug.Log("Collision with Death Zone!");
+        //if ( collider.CompareTag("Piece") )
+        //{
+        //    collider.GetComponent<Piece>().Destruction(.5f);
+        //}
+        if ( collider.CompareTag("Player") )
+        {
+            //GameManager.instance.PlayerDeath();
+        }
+    }
+
+    private void OnTriggerExit2D( Collider2D collider )
+    {
+        Debug.Log("Leaving Death Zone!");
         if ( collider.CompareTag("Piece") )
         {
             collider.GetComponent<Piece>().Destruction(.5f);
-        }
-        else if ( collider.CompareTag("Player") )
-        {
-            //GameManager.instance.PlayerDeath();
         }
     }
 }

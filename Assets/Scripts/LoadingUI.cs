@@ -23,15 +23,17 @@ public class LoadingUI : MonoBehaviour
     {
         int i = 0;
 
-        for ( i = 0; i < pieces.Length; i++ )
+        for ( i = 0; i < pieceImages.Count; i++ )
         {
-            pieceImages[i].sprite = pieces[i].GetSprite();
-            pieceImages[i].gameObject.SetActive(true);
-        }
-
-        for ( ;  i < pieceImages.Count; i++ )
-        {
-            pieceImages[i].gameObject.SetActive(false);
+            if ( i < pieces.Length )
+            {
+                pieceImages[i].sprite = pieces[i].GetSprite();
+                pieceImages[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                pieceImages[i].gameObject.SetActive(false);
+            }
         }
     }
 }
