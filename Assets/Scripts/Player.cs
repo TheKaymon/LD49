@@ -111,7 +111,6 @@ public class Player : MonoBehaviour
         p.body2D.constraints = RigidbodyConstraints2D.None;
         p.released = true;
 
-
         // Notify Load Zone
         loadZone.PieceDropped(p);
     }

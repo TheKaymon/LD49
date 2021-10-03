@@ -26,6 +26,21 @@ TextureImporter:
   - first:
       213: -8802669423878666724
     second: LD49_7
+  - first:
+      213: 8369305209969283391
+    second: LD49_8
+  - first:
+      213: -2310231347309992845
+    second: LD49_9
+  - first:
+      213: 2926010153885965691
+    second: LD49_10
+  - first:
+      213: 1897461618695029082
+    second: LD49_11
+  - first:
+      213: 1915053607624058798
+    second: LD49_12
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -166,23 +181,23 @@ TextureImporter:
       name: LD49_0
       rect:
         serializedVersion: 2
-        x: 8
-        y: 100
-        width: 16
-        height: 24
+        x: 12
+        y: 99
+        width: 17
+        height: 26
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -8, y: 12}
-        - {x: -8, y: -4}
-        - {x: 0, y: -4}
-        - {x: 0, y: -12}
-        - {x: 8, y: -12}
-        - {x: 8, y: 4}
-        - {x: 0, y: 4}
-        - {x: 0, y: 12}
+      - - {x: -8.5, y: 13}
+        - {x: -8.5, y: -4}
+        - {x: 0.5, y: -4}
+        - {x: 0.5, y: -13}
+        - {x: 8.5, y: -13}
+        - {x: 8.5, y: 4}
+        - {x: -0.5, y: 4}
+        - {x: -0.5, y: 13}
       tessellationDetail: 0
       bones: []
       spriteID: e44fb64d115a6fc00800000000000000
@@ -195,23 +210,23 @@ TextureImporter:
       name: LD49_1
       rect:
         serializedVersion: 2
-        x: 8
-        y: 68
-        width: 16
-        height: 24
+        x: 3
+        y: 66
+        width: 17
+        height: 26
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: 0, y: 12}
-        - {x: 0, y: 4}
-        - {x: -8, y: 4}
-        - {x: -8, y: -12}
-        - {x: 0, y: -12}
-        - {x: 0, y: -4}
-        - {x: 8, y: -4}
-        - {x: 8, y: 12}
+      - - {x: 0.5, y: 13}
+        - {x: 0.5, y: 4}
+        - {x: -8.5, y: 4}
+        - {x: -8.5, y: -13}
+        - {x: -0.5, y: -13}
+        - {x: -0.5, y: -4}
+        - {x: 8.5, y: -4}
+        - {x: 8.5, y: 13}
       tessellationDetail: 0
       bones: []
       spriteID: 7c5588f99d17a41d0800000000000000
@@ -224,21 +239,21 @@ TextureImporter:
       name: LD49_2
       rect:
         serializedVersion: 2
-        x: 40
-        y: 100
-        width: 16
-        height: 24
+        x: 44
+        y: 99
+        width: 17
+        height: 26
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -8, y: 12}
-        - {x: -8, y: -12}
-        - {x: 8, y: -12}
-        - {x: 8, y: -4}
-        - {x: 0, y: -4}
-        - {x: 0, y: 12}
+      - - {x: -8.5, y: 13}
+        - {x: -8.5, y: -13}
+        - {x: 8.5, y: -13}
+        - {x: 8.5, y: -5}
+        - {x: -0.5, y: -5}
+        - {x: -0.5, y: 13}
       tessellationDetail: 0
       bones: []
       spriteID: f1ac424b1f643e800800000000000000
@@ -251,21 +266,21 @@ TextureImporter:
       name: LD49_3
       rect:
         serializedVersion: 2
-        x: 40
-        y: 68
-        width: 16
-        height: 24
+        x: 35
+        y: 67
+        width: 17
+        height: 26
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: 0, y: 12}
-        - {x: 0, y: -4}
-        - {x: -8, y: -4}
-        - {x: -8, y: -12}
-        - {x: 8, y: -12}
-        - {x: 8, y: 12}
+      - - {x: 0.5, y: 13}
+        - {x: 0.5, y: -5}
+        - {x: -8.5, y: -5}
+        - {x: -8.5, y: -13}
+        - {x: 8.5, y: -13}
+        - {x: 8.5, y: 13}
       tessellationDetail: 0
       bones: []
       spriteID: a008b7930957b41c0800000000000000
@@ -278,23 +293,23 @@ TextureImporter:
       name: LD49_4
       rect:
         serializedVersion: 2
-        x: 72
-        y: 100
-        width: 16
-        height: 24
+        x: 76
+        y: 99
+        width: 17
+        height: 26
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -8, y: 12}
-        - {x: -8, y: -12}
-        - {x: 0, y: -12}
-        - {x: 0, y: -4}
-        - {x: 8, y: -4}
-        - {x: 8, y: 4}
-        - {x: 0, y: 4}
-        - {x: 0, y: 12}
+      - - {x: -8.5, y: 13}
+        - {x: -8.5, y: -13}
+        - {x: -0.5, y: -13}
+        - {x: -0.5, y: -4}
+        - {x: 8.5, y: -4}
+        - {x: 8.5, y: 4}
+        - {x: -0.5, y: 4}
+        - {x: -0.5, y: 13}
       tessellationDetail: 0
       bones: []
       spriteID: 6a19eb60d56553fc0800000000000000
@@ -382,6 +397,149 @@ TextureImporter:
       bones: []
       spriteID: c16058a2cc2a6d580800000000000000
       internalID: -8802669423878666724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LD49_8
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 99
+        width: 17
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -8.5, y: 13}
+        - {x: -8.5, y: -13}
+        - {x: 8.5, y: -13}
+        - {x: 8.5, y: 4}
+        - {x: -0.5, y: 4}
+        - {x: -0.5, y: 13}
+      tessellationDetail: 0
+      bones: []
+      spriteID: f319b09febeb52470800000000000000
+      internalID: 8369305209969283391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LD49_9
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 67
+        width: 17
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: 0.5, y: 13}
+        - {x: 0.5, y: 4}
+        - {x: -8.5, y: 4}
+        - {x: -8.5, y: -13}
+        - {x: 8.5, y: -13}
+        - {x: 8.5, y: 13}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 374ad9a64d860ffd0800000000000000
+      internalID: -2310231347309992845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LD49_10
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 35
+        width: 26
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -13, y: 13}
+        - {x: -13, y: 5}
+        - {x: -4, y: 5}
+        - {x: -4, y: -13}
+        - {x: 13, y: -13}
+        - {x: 13, y: -5}
+        - {x: 4, y: -5}
+        - {x: 4, y: 13}
+      tessellationDetail: 0
+      bones: []
+      spriteID: b7d1f877bb64b9820800000000000000
+      internalID: 2926010153885965691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LD49_11
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 3
+        width: 26
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -4, y: 13}
+        - {x: -4, y: -5}
+        - {x: -13, y: -5}
+        - {x: -13, y: -13}
+        - {x: 4, y: -13}
+        - {x: 4, y: 5}
+        - {x: 13, y: 5}
+        - {x: 13, y: 13}
+      tessellationDetail: 0
+      bones: []
+      spriteID: a51414df943255a10800000000000000
+      internalID: 1897461618695029082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LD49_12
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 35
+        width: 26
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: 5, y: 13}
+        - {x: 5, y: 4}
+        - {x: -4, y: 4}
+        - {x: -4, y: -5}
+        - {x: -13, y: -5}
+        - {x: -13, y: -13}
+        - {x: 4, y: -13}
+        - {x: 4, y: -4}
+        - {x: 13, y: -4}
+        - {x: 13, y: 13}
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea723481c13a39a10800000000000000
+      internalID: 1915053607624058798
       vertices: []
       indices: 
       edges: []

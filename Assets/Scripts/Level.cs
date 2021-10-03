@@ -14,9 +14,11 @@ public class Level : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public List<Piece> pieceTypes;
     public LevelSetup currentLevel;
+    public PopupText popupTextPrefab;
     private List<BoxCollider2D> scoringZones;
     private IEnumerator checkCoroutine;
     private int stage = 0;
+    private List<Piece> countedPieces;
 
     private void Awake()
     {
@@ -29,6 +31,7 @@ public class Level : MonoBehaviour
     {
         checkCoroutine = CheckForMotion();
         scoringZones = new List<BoxCollider2D>();
+        countedPieces = new List<Piece>();
 
         for ( int i = 0; i < scoringZoneParent.childCount; i++ )
         {
@@ -48,6 +51,7 @@ public class Level : MonoBehaviour
     {
         stage = 0;
         currentLevel = level;
+        countedPieces.Clear();
         StartStage();
     }
 
@@ -79,7 +83,7 @@ public class Level : MonoBehaviour
 
     private void EndStage()
     {
-        StopCoroutine(checkCoroutine);
+        StopAllCoroutines();
         stage++;
 
         //CalculateScore();
@@ -126,6 +130,9 @@ public class Level : MonoBehaviour
 
             score *= 2;
         }
+
+        // Calculate Beam Score?
+
         scoreText.SetText($"Score: {totalScore}");
         levelEndUI.SetActive(true);
         Debug.Log($"Level Score is: {totalScore}");
@@ -147,7 +154,7 @@ public class Level : MonoBehaviour
                 }
             }
             if ( !movement )
-                EndStage(); //yield return StartCoroutine(CalculateRoundScore());
+                yield return StartCoroutine(CalculateRoundScore());
             yield return new WaitForSeconds(0.5f);
         }
     }
@@ -156,7 +163,6 @@ public class Level : MonoBehaviour
     {
         Debug.Log("Calculating Round Score");
         Piece p;
-        List<Piece> countedPieces = new List<Piece>();
         int hits = 0;
         // TODO: Set Cap to Match Level Pieces
         Collider2D[] colliders = new Collider2D[32];
@@ -166,6 +172,8 @@ public class Level : MonoBehaviour
         //filter.NoFilter();
         int totalScore = 0;
         int score = 1;
+        Vector3 pos;
+        PopupText text;
 
         for ( int i = 0; i < scoringZones.Count; i++ )
         {
@@ -173,44 +181,57 @@ public class Level : MonoBehaviour
             //Debug.Log($"{hits} Hits!");
             for ( int h = 0; h < hits; h++ )
             {
-                p = colliders[h].GetComponent<Piece>();
-                if ( !countedPieces.Contains(p) )
+                if ( colliders[h] != null )
                 {
-                    totalScore += score;
-                    countedPieces.Add(p);
-                    Debug.Log($"{score} scored from {p}");
+                    p = colliders[h].GetComponent<Piece>();
+                    if ( !countedPieces.Contains(p) )
+                    {
+                        totalScore += score;
+                        countedPieces.Add(p);
+
+                        pos = p.transform.position;
+                        pos.z = -1;
+                        text = Instantiate(popupTextPrefab, pos, Quaternion.identity);
+                        text.Initialize(score);
+
+                        //Debug.Log($"{score} scored from {p}");
+                    }
                 }
 
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.2f);
             }
 
             score *= 2;
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.3f);
         }
 
-
+        yield return StartCoroutine(MoveCamera());
     }
 
     private IEnumerator MoveCamera()
     {
         Debug.Log("Moving Camera");
-        float y = loadZone.lastBeam.transform.position.y;
-
+        float yTarg = loadZone.lastBeam.transform.position.y + 4.5f;
+        float yStart = mainCam.transform.position.y;
+        float timer = 0f;
         while ( true )
         {
-            bool movement = false;
-            for ( int i = 0; i < loadZone.droppedPieces.Count; i++ )
+            timer += Time.deltaTime;
+
+            if( timer > 1f)
             {
-                if ( loadZone.droppedPieces[i].body2D.velocity.sqrMagnitude > 0.01f
-                    || loadZone.droppedPieces[i].body2D.angularVelocity > 0.1f )
-                {
-                    movement = true;
-                }
-            }
-            if ( !movement )
+                mainCam.transform.position = new Vector3(0, yTarg, -10);
                 EndStage();
-            yield return new WaitForSeconds(0.5f);
+            }
+            else
+            {
+                float y = Mathf.Lerp(yStart, yTarg, timer);
+                mainCam.transform.position = new Vector3(0, y, -10);
+            }
+
+                
+            yield return null;
         }
     }
 
