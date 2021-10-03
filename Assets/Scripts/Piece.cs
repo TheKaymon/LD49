@@ -60,7 +60,7 @@ public class Piece : MonoBehaviour
             startAngle = currentAngle;
             targetAngle = startAngle + rotating * quarterTurn;
 
-            Debug.Log($"Rotating from {startAngle} to {targetAngle}");
+            //Debug.Log($"Rotating from {startAngle} to {targetAngle}");
         }
     }
 
