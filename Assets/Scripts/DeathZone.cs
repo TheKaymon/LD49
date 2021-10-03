@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DeathZone : MonoBehaviour
 {
+    public Transform pointSpawn;
+    public PopupText popupTextPrefab;
     // Start is called before the first frame update
     //void Start()
     //{
@@ -18,7 +20,7 @@ public class DeathZone : MonoBehaviour
 
     private void OnTriggerEnter2D( Collider2D collider )
     {
-        Debug.Log("Collision with Death Zone!");
+        //Debug.Log("Collision with Death Zone!");
         //if ( collider.CompareTag("Piece") )
         //{
         //    collider.GetComponent<Piece>().Destruction(.5f);
@@ -31,9 +33,12 @@ public class DeathZone : MonoBehaviour
 
     private void OnTriggerExit2D( Collider2D collider )
     {
-        Debug.Log("Leaving Death Zone!");
+        //Debug.Log("Leaving Death Zone!");
         if ( collider.CompareTag("Piece") && collider.transform.position.y < transform.position.y)
         {
+            PopupText text = Instantiate(popupTextPrefab, pointSpawn.position, Quaternion.identity);
+            text.Initialize(-1);
+
             collider.GetComponent<Piece>().Destruction(.5f);
         }
     }

@@ -6,8 +6,8 @@ using TMPro;
 public class PopupText : MonoBehaviour
 {
     public TextMeshPro text;
-    private float speed;
-    private float lifeTime = 1f;
+    private float speed = 1.25f;
+    private float lifeTime = 1.5f;
     private float timer = 0;
 
 
@@ -30,6 +30,12 @@ public class PopupText : MonoBehaviour
 
     public void Initialize( int amount ) //color
     {
-        text.SetText($"+{amount}");
+        if( amount < 0 )
+        {
+            text.color = Color.red;
+            text.SetText($"{amount}");
+        }
+        else
+            text.SetText($"+{amount}");
     }
 }

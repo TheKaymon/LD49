@@ -22,7 +22,7 @@ TextureImporter:
     second: LD49_5
   - first:
       213: -6455413657400262639
-    second: LD49_6
+    second: Beam
   - first:
       213: -8802669423878666724
     second: LD49_7
@@ -41,6 +41,27 @@ TextureImporter:
   - first:
       213: 1915053607624058798
     second: LD49_12
+  - first:
+      213: -155108507738592343
+    second: BG
+  - first:
+      213: 7631666825213391227
+    second: Walls
+  - first:
+      213: -6162600930142987747
+    second: Player
+  - first:
+      213: 4965600491584776627
+    second: WarningSide
+  - first:
+      213: 7177873003612778396
+    second: LD49_17
+  - first:
+      213: -5708797407744132150
+    second: LD49_18
+  - first:
+      213: 4931076458935366208
+    second: WarningDown
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -348,11 +369,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: LD49_6
+      name: Beam
       rect:
         serializedVersion: 2
-        x: 96
-        y: 16
+        x: 192
+        y: 96
         width: 16
         height: 16
       alignment: 0
@@ -540,6 +561,153 @@ TextureImporter:
       bones: []
       spriteID: ea723481c13a39a10800000000000000
       internalID: 1915053607624058798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BG
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 48
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9aba99e42a1f8ddf0800000000000000
+      internalID: -155108507738592343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Walls
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 92
+        width: 36
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b713af01b8029e960800000000000000
+      internalID: 7631666825213391227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Player
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 117
+        width: 20
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1ad55ada1b0a7aa0800000000000000
+      internalID: -6162600930142987747
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarningSide
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 8
+        width: 24
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b96a65965b59e440800000000000000
+      internalID: 4965600491584776627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LD49_17
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 48
+        width: 16
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9fa43f777dec9360800000000000000
+      internalID: 7177873003612778396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LD49_18
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 48
+        width: 16
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acb7db0110746c0b0800000000000000
+      internalID: -5708797407744132150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WarningDown
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 4
+        width: 16
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0423227d9e3be6440800000000000000
+      internalID: 4931076458935366208
       vertices: []
       indices: 
       edges: []

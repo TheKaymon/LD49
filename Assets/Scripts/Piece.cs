@@ -8,6 +8,7 @@ public class Piece : MonoBehaviour
 
     public SpriteRenderer sr;
     public Rigidbody2D body2D;
+    public SpriteRenderer outline;
 
     [HideInInspector]
     public bool grabbed;
@@ -51,6 +52,14 @@ public class Piece : MonoBehaviour
         currentAngle = angle;
     }
 
+    public void ToggleOutline( bool show )
+    {
+        if ( show )
+            outline.gameObject.SetActive(true);
+        else
+            outline.gameObject.SetActive(false);
+    }
+
     public void Rotate( bool clockwise )
     {
         if( rotating == 0 )
@@ -66,7 +75,7 @@ public class Piece : MonoBehaviour
 
     public void Destruction( float delay )
     {
-        GameManager.level.loadZone.PieceDestroyed(this);
+        GameManager.level.PieceDestroyed(this);
         Destroy(gameObject, delay);
     }
 }

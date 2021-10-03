@@ -12,4 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd1217d6b71ebe44695f663fd15855f8, type: 3}
   m_Name: Level1
   m_EditorClassIdentifier: 
-  levelStages: 0a0000000a0000000a000000
+  levelStages:
+  - numBlocks: 10
+    lastBlockAvailable: 5
+    dropInterval: 8
+    dropGravity: 0.1
+  - numBlocks: 10
+    lastBlockAvailable: 5
+    dropInterval: 7.5
+    dropGravity: 0.1
+  - numBlocks: 10
+    lastBlockAvailable: 5
+    dropInterval: 7
+    dropGravity: 0.1

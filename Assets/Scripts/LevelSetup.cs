@@ -5,5 +5,14 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Level")]
 public class LevelSetup : ScriptableObject
 {
-    public List<int> levelStages;
+    [System.Serializable]
+    public struct LevelStage
+    {
+        public int numBlocks;
+        public int lastBlockAvailable;
+        public float dropInterval;
+        public float dropGravity;
+    }
+
+    public List<LevelStage> levelStages;
 }

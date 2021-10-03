@@ -15,10 +15,12 @@ public class Level : MonoBehaviour
     public List<Piece> pieceTypes;
     public LevelSetup currentLevel;
     public PopupText popupTextPrefab;
-    private List<BoxCollider2D> scoringZones;
+    private List<ScoringZone> scoringZones;
     private IEnumerator checkCoroutine;
     private int stage = 0;
     private List<Piece> countedPieces;
+    private int levelScore;
+    //private int totalScore;
 
     private void Awake()
     {
@@ -30,12 +32,14 @@ public class Level : MonoBehaviour
     void Start()
     {
         checkCoroutine = CheckForMotion();
-        scoringZones = new List<BoxCollider2D>();
+        scoringZones = new List<ScoringZone>();
         countedPieces = new List<Piece>();
-
+        int points = 1;
         for ( int i = 0; i < scoringZoneParent.childCount; i++ )
         {
-            scoringZones.Add(scoringZoneParent.GetChild(i).GetComponent<BoxCollider2D>());
+            scoringZones.Add(scoringZoneParent.GetChild(i).GetComponent<ScoringZone>());
+            scoringZones[i].Score = points;
+            points *= 2;
         }
 
         StartStage();
@@ -55,6 +59,12 @@ public class Level : MonoBehaviour
         StartStage();
     }
 
+    public void PieceDestroyed( Piece p )
+    {
+        loadZone.PieceDestroyed(p);
+        levelScore--;
+    }
+
     public void BeamDropped()
     {
         Debug.Log("Beam Dropped");
@@ -69,14 +79,24 @@ public class Level : MonoBehaviour
     {
         // Generate Pieces
         List<Piece> pieces = new List<Piece>();
+        int lastType = -1;
         int type;
-        for ( int i = 0; i < currentLevel.levelStages[stage]; i++ )
+        int lastIndex = currentLevel.levelStages[stage].lastBlockAvailable;
+        int typeCount = lastIndex + 1;
+        for ( int i = 0; i < currentLevel.levelStages[stage].numBlocks; i++ )
         {
-            type = Random.Range(0, pieceTypes.Count);
+            type = Random.Range(0, typeCount);
+            if( type == lastType )
+            {
+                type = (type + Random.Range(0, lastIndex )) % typeCount;
+            }
+            lastType = type;
             pieces.Add(pieceTypes[type]);
             //Debug.Log($"Adding piece {pieceTypes[type]}");
         }
         // Set up Loading Zone
+        loadZone.dropInterval = currentLevel.levelStages[stage].dropInterval;
+        loadZone.dropGravity = currentLevel.levelStages[stage].dropGravity;
         loadZone.LoadPieces(pieces);
         player.paused = false;
     }
@@ -101,41 +121,9 @@ public class Level : MonoBehaviour
 
     private void CalculateScore()
     {
-        Piece p;
-        List<Piece> countedPieces = new List<Piece>();
-        int hits = 0;
-        // TODO: Set Cap to Match Level Pieces
-        Collider2D[] colliders = new Collider2D[32];
-        // Setup Filter
-        ContactFilter2D filter = new ContactFilter2D();
-        filter.SetLayerMask(pieceMask);
-        //filter.NoFilter();
-        int totalScore = 0;
-        int score = 1;
-
-        for ( int i = 0; i < scoringZones.Count; i++ )
-        {
-            hits = scoringZones[i].OverlapCollider(filter, colliders);
-            //Debug.Log($"{hits} Hits!");
-            for ( int h = 0; h < hits; h++ )
-            {
-                p = colliders[h].GetComponent<Piece>();
-                if( !countedPieces.Contains(p) )
-                {
-                    totalScore += score;
-                    countedPieces.Add(p);
-                    Debug.Log($"{score} scored from {p}");
-                }
-            }
-
-            score *= 2;
-        }
-
-        // Calculate Beam Score?
-
-        scoreText.SetText($"Score: {totalScore}");
+        scoreText.SetText($"Score: {levelScore}");
         levelEndUI.SetActive(true);
-        Debug.Log($"Level Score is: {totalScore}");
+        Debug.Log($"Level Score is: {levelScore}");
     }
 
     private IEnumerator CheckForMotion()
@@ -153,6 +141,8 @@ public class Level : MonoBehaviour
                     movement = true;
                 }
             }
+            movement |= ( loadZone.lastBeam.GetComponent<Rigidbody2D>().velocity.sqrMagnitude > 0.01f
+                            || loadZone.lastBeam.GetComponent<Rigidbody2D>().angularVelocity > 0.1f );
             if ( !movement )
                 yield return StartCoroutine(CalculateRoundScore());
             yield return new WaitForSeconds(0.5f);
@@ -163,6 +153,7 @@ public class Level : MonoBehaviour
     {
         Debug.Log("Calculating Round Score");
         Piece p;
+        Piece last = null;
         int hits = 0;
         // TODO: Set Cap to Match Level Pieces
         Collider2D[] colliders = new Collider2D[32];
@@ -170,41 +161,61 @@ public class Level : MonoBehaviour
         ContactFilter2D filter = new ContactFilter2D();
         filter.SetLayerMask(pieceMask);
         //filter.NoFilter();
-        int totalScore = 0;
-        int score = 1;
         Vector3 pos;
         PopupText text;
 
         for ( int i = 0; i < scoringZones.Count; i++ )
         {
-            hits = scoringZones[i].OverlapCollider(filter, colliders);
-            //Debug.Log($"{hits} Hits!");
-            for ( int h = 0; h < hits; h++ )
+            // Get Hits
+            hits = scoringZones[i].box.OverlapCollider(filter, colliders);
+
+            // Turn Off Last Zone Highlight
+            if ( i > 0 )
+                scoringZones[i - 1].Deactivate();
+            // Turn On Current Zone Highlight
+            if ( hits > 0 )
             {
-                if ( colliders[h] != null )
+                scoringZones[i].Activate();
+
+                //Debug.Log($"{hits} Hits!");
+                for ( int h = 0; h < hits; h++ )
                 {
-                    p = colliders[h].GetComponent<Piece>();
-                    if ( !countedPieces.Contains(p) )
+                    if ( colliders[h] != null )
                     {
-                        totalScore += score;
-                        countedPieces.Add(p);
+                        p = colliders[h].GetComponent<Piece>();
+                        if ( !countedPieces.Contains(p) )
+                        {
+                            if ( last != null )
+                                last.ToggleOutline(false);
 
-                        pos = p.transform.position;
-                        pos.z = -1;
-                        text = Instantiate(popupTextPrefab, pos, Quaternion.identity);
-                        text.Initialize(score);
+                            levelScore += scoringZones[i].Score;
+                            countedPieces.Add(p);
+                            p.gameObject.layer = 7;
+                            p.ToggleOutline(true);
+                            last = p;
 
-                        //Debug.Log($"{score} scored from {p}");
+                            pos = p.transform.position;
+                            pos.z = -1;
+                            text = Instantiate(popupTextPrefab, pos, Quaternion.identity);
+                            text.Initialize(scoringZones[i].Score);
+
+                            //Debug.Log($"{score} scored from {p}");
+                        }
                     }
+
+                    yield return new WaitForSeconds(0.25f);
                 }
 
-                yield return new WaitForSeconds(0.2f);
+                if ( last != null )
+                    last.ToggleOutline(false);
+
+                yield return new WaitForSeconds(1f);
             }
 
-            score *= 2;
 
-            yield return new WaitForSeconds(0.3f);
         }
+        // Turn off Scoring Zone
+        scoringZones[scoringZones.Count - 1].Deactivate();
 
         yield return StartCoroutine(MoveCamera());
     }
@@ -212,7 +223,7 @@ public class Level : MonoBehaviour
     private IEnumerator MoveCamera()
     {
         Debug.Log("Moving Camera");
-        float yTarg = loadZone.lastBeam.transform.position.y + 4.5f;
+        float yTarg = loadZone.lastBeam.GetComponent<BoxCollider2D>().bounds.min.y + 5.5f;
         float yStart = mainCam.transform.position.y;
         float timer = 0f;
         while ( true )

@@ -6,6 +6,9 @@ public class LoadingDock : MonoBehaviour
 {
     public Transform createAtLeft;
     public Transform createAtRight;
+    //public PopupWarning leftWarning;
+    //public PopupWarning rightWarning;
+    public PopupWarning centerWarning;
 
     public Piece loadedPiece;
     public LoadingUI ui;
@@ -13,6 +16,7 @@ public class LoadingDock : MonoBehaviour
     public bool autoDrop = false;
     public bool alternateDrops = false;
     public float dropInterval = 5f;
+    public float dropGravity = .15f;
     public GameObject beamPrefab;
     public GameObject lastBeam;
     private bool active = false;
@@ -33,6 +37,7 @@ public class LoadingDock : MonoBehaviour
         droppedPieces = new List<Piece>();
 
         ui.SetPieces(pieces.ToArray());
+
     }
 
     // Update is called once per frame
@@ -57,7 +62,9 @@ public class LoadingDock : MonoBehaviour
         //droppedPieces.Clear();
         dropTimer = 0;
         active = true;
-        GenerateNextPiece();
+        //GenerateNextPiece();
+        int direction = lastDropLeft ? 1 : -1;
+        centerWarning.Initialize(dropInterval, direction);
     }
 
     public void PieceGrabbed( Piece p )
@@ -93,6 +100,7 @@ public class LoadingDock : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0, 0, rotate);
             loadedPiece = Instantiate(pieces.Dequeue(), position, rotation);
             loadedPiece.currentAngle = rotate;
+            loadedPiece.body2D.gravityScale = dropGravity;
             activePieces.Add(loadedPiece);
 
             dropTimer = ( pieces.Count > 0 ) ? 0 : - dropInterval;
@@ -100,12 +108,23 @@ public class LoadingDock : MonoBehaviour
 
             ui.SetPieces(pieces.ToArray());
             // Create UI Counter
+            if ( pieces.Count > 0 )
+            {
+                if ( lastDropLeft )
+                    centerWarning.Initialize(dropInterval, 1);
+                else
+                    centerWarning.Initialize(dropInterval, -1);
+            }
+            else
+            {
+                centerWarning.Initialize(dropInterval * 2, 0);
+            }
         }
         else //if ( pieceCounter >= beamInterval )
         {
             lastBeam = Instantiate(beamPrefab, new Vector2(0, createAtLeft.position.y), Quaternion.identity);
 
-            GameManager.level.player.paused = true;
+            GameManager.level.player.SetControl(false);
             GameManager.level.BeamDropped();
             active = false;
         }

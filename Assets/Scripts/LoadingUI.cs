@@ -25,10 +25,10 @@ public class LoadingUI : MonoBehaviour
     {
         int i = 0;
 
-        if ( pieces.Length > 0 )
-            title.SetText($"{pieces.Length} Remaining");
-        else
-            title.SetText($"None Remaining");
+        //if ( pieces.Length > 0 )
+        //    title.SetText($"{pieces.Length} Remaining");
+        //else
+        //    title.SetText($"None Remaining");
         for ( i = 0; i < pieceImages.Count; i++ )
         {
             if ( i < pieces.Length )

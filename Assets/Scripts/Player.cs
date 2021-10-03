@@ -12,13 +12,19 @@ public class Player : MonoBehaviour
     DistanceJoint2D distanceJoint;
     Rigidbody2D body2D;
 
+    [HideInInspector]
     public Piece currentPiece;
+    [HideInInspector]
+    public Piece nearbyPiece;
+    public SpriteRenderer sprite;
     public LineRenderer attachLine;
     public bool paused;
 
     public float speed = 250f;
     private float heldGravity = 2f;
     private float droppedGravity = 0.5f;
+
+    private float maxTiltAngle = 10f;
 
     Vector2 input;
 
@@ -67,18 +73,37 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void SetControl( bool control )
+    {
+        paused = !control;
+        if( paused && currentPiece != null )
+        {
+            DropPiece();
+        }
+    }
+
     private void FixedUpdate()
     {
         if ( !paused )
+        {
             body2D.velocity = input * speed * Time.deltaTime;
+            float lerp = ( input.x + 1 ) / 2f;
+            float angle = Mathf.Lerp(maxTiltAngle, -maxTiltAngle, lerp);
+            sprite.transform.localRotation = Quaternion.Euler(0, 0, angle);
+        }
         else
+        {
             body2D.velocity = Vector2.zero;
+            sprite.transform.localRotation = Quaternion.identity;
+        }
     }
 
     private void GrabPiece(Piece piece)
     {
         if ( piece != null && !piece.grabbed)
         {
+            nearbyPiece = null;
+
             // Set Physics
             distanceJoint.connectedBody = piece.body2D;
             currentPiece = piece;
@@ -88,6 +113,7 @@ public class Player : MonoBehaviour
             // Set Line
             UpdateLine();
             attachLine.gameObject.SetActive(true);
+            piece.ToggleOutline(false);
 
             loadZone.PieceGrabbed(piece);
         }
@@ -113,6 +139,11 @@ public class Player : MonoBehaviour
 
         // Notify Load Zone
         loadZone.PieceDropped(p);
+
+        if( nearbyPiece != null )
+        {
+            GrabPiece(nearbyPiece);
+        }
     }
 
     private void UpdateLine()
@@ -123,17 +154,23 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D( Collider2D collision )
     {
-        if ( currentPiece == null && collision.gameObject.CompareTag("Piece") )
+        if ( collision.gameObject.CompareTag("Piece") )
         {
-            GrabPiece(collision.gameObject.GetComponent<Piece>());
+            if ( currentPiece == null )
+                GrabPiece(collision.gameObject.GetComponent<Piece>());
+            else
+                nearbyPiece = collision.gameObject.GetComponent<Piece>();
         }
     }
 
-    //private void OnTriggerExit2D( Collider2D collision )
-    //{
-    //    loadZone = null;
-    //    //Debug.Log("Exiting Loading Zone");
-    //}
+    private void OnTriggerExit2D( Collider2D collision )
+    {
+        if ( collision.gameObject.CompareTag("Piece") )
+        {
+            if ( currentPiece != null )
+                nearbyPiece = null;
+        }
+    }
 
     //private void OnCollisionEnter2D( Collision2D collision )
     //{
