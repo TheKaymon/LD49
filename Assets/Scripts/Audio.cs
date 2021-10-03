@@ -11,7 +11,7 @@ public class Audio : MonoBehaviour
         if ( instance != null )
             Debug.Log("Multiple Audio Managers!");
         instance = this;
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);
     }
 
     public AudioMixer main;
@@ -19,7 +19,6 @@ public class Audio : MonoBehaviour
     public float maxVolume = 20f;
     public AudioSource musicChannel;
     public List<AudioSource> sfxChannels;
-    public List<AudioClip> clips;
 
 
     //public readonly string masterMix = "MasterVol";
@@ -56,11 +55,12 @@ public class Audio : MonoBehaviour
         musicChannel.Stop();
     }
 
-    public void PlaySFX( int soundIndex, Vector2 position )
+    public void PlaySFX( AudioClip sound, Vector2 position, float pitch = 1f )
     {
         sfxChannels[channelIndex].transform.SetPositionAndRotation(position, Quaternion.identity);
         //Debug.Log($"Playing Sound index {soundIndex} on channel {channelIndex}");
-        sfxChannels[channelIndex].PlayOneShot(clips[soundIndex]);
+        sfxChannels[channelIndex].pitch = pitch;
+        sfxChannels[channelIndex].PlayOneShot(sound);
         channelIndex = ( channelIndex + 1 ) % sfxChannels.Count;
     }
 }

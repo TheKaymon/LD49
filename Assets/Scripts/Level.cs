@@ -2,29 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Level : MonoBehaviour
 {
+    public static Level instance;
+
     public Camera mainCam;
     public Player player;
+    public AudioClip pointsScored;
     public LoadingDock loadZone;
     public Transform scoringZoneParent;
     public LayerMask pieceMask;
-    public GameObject levelEndUI;
+    public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI stageText;
+    public TextMeshProUGUI livesText;
     public List<Piece> pieceTypes;
-    public LevelSetup currentLevel;
+    public LevelSetup levelSettings;
     public PopupText popupTextPrefab;
+    public GameObject titleScreen;
+    public TextMeshProUGUI titleText;
+    public GameObject startButton;
+    public GameObject pauseGroup;
+    public GameObject audioPanel;
+    public GameObject gameOverUI;
     private List<ScoringZone> scoringZones;
     private IEnumerator checkCoroutine;
     private int stage = 0;
+    private int piecesLost = 0;
+    private int gameOverCount = 3;
     private List<Piece> countedPieces;
     private int levelScore;
     //private int totalScore;
+    private float pitchShift = 0.25f;
+
+    public bool paused = true;
 
     private void Awake()
     {
-        GameManager.level = this;
+        instance = this;
 
     }
 
@@ -42,27 +59,82 @@ public class Level : MonoBehaviour
             points *= 2;
         }
 
-        StartStage();
+        if ( !levelSettings.showMainMenu )
+            StartGame();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if( Input.GetButtonDown("Cancel"))
+        {
+            if ( paused )
+                ResumeGame();
+            else
+                PauseGame();
+        }
     }
 
-    public void LoadLevel( LevelSetup level )
+    public void StartGame()
     {
+        // Hide Main Menu
+        titleScreen.SetActive(false);
+        titleText.SetText("Resume");
+        startButton.SetActive(false);
+        pauseGroup.SetActive(true);
+        // Show Side Stuff
+        paused = true;
+        StopAllCoroutines();
+        loadZone.ClearPieces();
+        levelScore = 0;
+        piecesLost = 0;
         stage = 0;
-        currentLevel = level;
         countedPieces.Clear();
+        paused = false;
         StartStage();
+    }
+
+    public void PauseGame()
+    {
+        paused = true;
+        Time.timeScale = 0;
+        titleScreen.SetActive(true);
+    }
+
+    public void ResumeGame()
+    {
+        paused = false;
+        Time.timeScale = 1;
+        titleScreen.SetActive(false);
+    }
+
+    public void RestartGame( bool showMainMenu )
+    {
+        levelSettings.showMainMenu = showMainMenu;
+        Time.timeScale = 1;
+        SceneManager.LoadScene(0);
+    }
+
+    public void PieceGrabbed( Piece p )
+    {
+        levelScore++;
+        scoreText.SetText(levelScore.ToString());
+        PopupText text = Instantiate(popupTextPrefab, p.transform.position, Quaternion.identity);
+        text.Initialize(1);
+        Audio.instance.PlaySFX(pointsScored, transform.position);
     }
 
     public void PieceDestroyed( Piece p )
     {
         loadZone.PieceDestroyed(p);
         levelScore--;
+        piecesLost++;
+        livesText.SetText((gameOverCount-piecesLost).ToString());
+
+        if ( piecesLost > gameOverCount )
+        {
+            GameOver();
+        }
     }
 
     public void BeamDropped()
@@ -81,9 +153,9 @@ public class Level : MonoBehaviour
         List<Piece> pieces = new List<Piece>();
         int lastType = -1;
         int type;
-        int lastIndex = currentLevel.levelStages[stage].lastBlockAvailable;
+        int lastIndex = levelSettings.levelStages[stage].lastBlockAvailable;
         int typeCount = lastIndex + 1;
-        for ( int i = 0; i < currentLevel.levelStages[stage].numBlocks; i++ )
+        for ( int i = 0; i < levelSettings.levelStages[stage].numBlocks; i++ )
         {
             type = Random.Range(0, typeCount);
             if( type == lastType )
@@ -95,35 +167,28 @@ public class Level : MonoBehaviour
             //Debug.Log($"Adding piece {pieceTypes[type]}");
         }
         // Set up Loading Zone
-        loadZone.dropInterval = currentLevel.levelStages[stage].dropInterval;
-        loadZone.dropGravity = currentLevel.levelStages[stage].dropGravity;
+        loadZone.dropInterval = levelSettings.levelStages[stage].dropInterval;
+        loadZone.dropGravity = levelSettings.levelStages[stage].dropGravity;
         loadZone.LoadPieces(pieces);
+        stageText.SetText((stage + 1).ToString());
         player.paused = false;
+    }
+
+    private void GameOver()
+    {
+        paused = true;
+        gameOverText.SetText($"Score: {levelScore}");
+        gameOverUI.SetActive(true);
+        Debug.Log($"Level Score is: {levelScore}");
     }
 
     private void EndStage()
     {
         StopAllCoroutines();
-        stage++;
 
-        //CalculateScore();
-        // Move Camera
-
-        if ( stage < currentLevel.levelStages.Count )
-        {
-            StartStage();
-        }
-        else
-        {
-            CalculateScore();
-        }
-    }
-
-    private void CalculateScore()
-    {
-        scoreText.SetText($"Score: {levelScore}");
-        levelEndUI.SetActive(true);
-        Debug.Log($"Level Score is: {levelScore}");
+        if ( stage < levelSettings.levelStages.Count - 1 )
+            stage++;
+        StartStage();
     }
 
     private IEnumerator CheckForMotion()
@@ -132,19 +197,22 @@ public class Level : MonoBehaviour
         Debug.Log("Checking for Motion");
         while ( true )
         {
-            bool movement = false;
-            for ( int i = 0; i < loadZone.droppedPieces.Count; i++ )
+            if ( !paused )
             {
-                if ( loadZone.droppedPieces[i].body2D.velocity.sqrMagnitude > 0.01f
-                    || loadZone.droppedPieces[i].body2D.angularVelocity > 0.1f )
+                bool movement = false;
+                for ( int i = 0; i < loadZone.droppedPieces.Count; i++ )
                 {
-                    movement = true;
+                    if ( loadZone.droppedPieces[i].body2D.velocity.sqrMagnitude > 0.01f
+                        || loadZone.droppedPieces[i].body2D.angularVelocity > 0.1f )
+                    {
+                        movement = true;
+                    }
                 }
+                movement |= ( loadZone.lastBeam.GetComponent<Rigidbody2D>().velocity.sqrMagnitude > 0.01f
+                                || loadZone.lastBeam.GetComponent<Rigidbody2D>().angularVelocity > 0.1f );
+                if ( !movement )
+                    yield return StartCoroutine(CalculateRoundScore());
             }
-            movement |= ( loadZone.lastBeam.GetComponent<Rigidbody2D>().velocity.sqrMagnitude > 0.01f
-                            || loadZone.lastBeam.GetComponent<Rigidbody2D>().angularVelocity > 0.1f );
-            if ( !movement )
-                yield return StartCoroutine(CalculateRoundScore());
             yield return new WaitForSeconds(0.5f);
         }
     }
@@ -163,56 +231,65 @@ public class Level : MonoBehaviour
         //filter.NoFilter();
         Vector3 pos;
         PopupText text;
+        float pitch = 1f;
 
         for ( int i = 0; i < scoringZones.Count; i++ )
         {
-            // Get Hits
-            hits = scoringZones[i].box.OverlapCollider(filter, colliders);
-
-            // Turn Off Last Zone Highlight
-            if ( i > 0 )
-                scoringZones[i - 1].Deactivate();
-            // Turn On Current Zone Highlight
-            if ( hits > 0 )
+            if ( !paused )
             {
-                scoringZones[i].Activate();
+                // Get Hits
+                hits = scoringZones[i].box.OverlapCollider(filter, colliders);
 
-                //Debug.Log($"{hits} Hits!");
-                for ( int h = 0; h < hits; h++ )
+                // Turn Off Last Zone Highlight
+                if ( i > 0 )
+                    scoringZones[i - 1].Deactivate();
+                // Turn On Current Zone Highlight
+                if ( hits > 0 )
                 {
-                    if ( colliders[h] != null )
+                    scoringZones[i].Activate();
+
+                    //Debug.Log($"{hits} Hits!");
+                    for ( int h = 0; h < hits; h++ )
                     {
-                        p = colliders[h].GetComponent<Piece>();
-                        if ( !countedPieces.Contains(p) )
+                        if ( colliders[h] != null )
                         {
-                            if ( last != null )
-                                last.ToggleOutline(false);
+                            p = colliders[h].GetComponent<Piece>();
+                            if ( !countedPieces.Contains(p) )
+                            {
+                                if ( last != null )
+                                    last.ToggleOutline(false);
 
-                            levelScore += scoringZones[i].Score;
-                            countedPieces.Add(p);
-                            p.gameObject.layer = 7;
-                            p.ToggleOutline(true);
-                            last = p;
+                                levelScore += scoringZones[i].Score;
+                                countedPieces.Add(p);
+                                p.gameObject.layer = 7;
+                                p.scored = true;
+                                p.ToggleOutline(true);
+                                last = p;
 
-                            pos = p.transform.position;
-                            pos.z = -1;
-                            text = Instantiate(popupTextPrefab, pos, Quaternion.identity);
-                            text.Initialize(scoringZones[i].Score);
+                                pos = p.transform.position;
+                                pos.z = -1;
+                                text = Instantiate(popupTextPrefab, pos, Quaternion.identity);
+                                text.Initialize(scoringZones[i].Score);
+                                Audio.instance.PlaySFX(pointsScored, transform.position);
+                                pitch += pitchShift;
 
-                            //Debug.Log($"{score} scored from {p}");
+                                scoreText.SetText(levelScore.ToString());
+                                //Debug.Log($"{score} scored from {p}");
+                            }
                         }
+
+                        yield return new WaitForSeconds(0.25f);
                     }
 
-                    yield return new WaitForSeconds(0.25f);
+                    if ( last != null )
+                        last.ToggleOutline(false);
+
+                    yield return new WaitForSeconds(1f);
                 }
 
-                if ( last != null )
-                    last.ToggleOutline(false);
-
-                yield return new WaitForSeconds(1f);
             }
-
-
+            else
+                yield return new WaitForSeconds(0.25f);
         }
         // Turn off Scoring Zone
         scoringZones[scoringZones.Count - 1].Deactivate();
@@ -228,19 +305,21 @@ public class Level : MonoBehaviour
         float timer = 0f;
         while ( true )
         {
-            timer += Time.deltaTime;
-
-            if( timer > 1f)
+            if ( !paused )
             {
-                mainCam.transform.position = new Vector3(0, yTarg, -10);
-                EndStage();
-            }
-            else
-            {
-                float y = Mathf.Lerp(yStart, yTarg, timer);
-                mainCam.transform.position = new Vector3(0, y, -10);
-            }
+                timer += Time.deltaTime;
 
+                if ( timer > 1f )
+                {
+                    mainCam.transform.position = new Vector3(0, yTarg, -10);
+                    EndStage();
+                }
+                else
+                {
+                    float y = Mathf.Lerp(yStart, yTarg, timer);
+                    mainCam.transform.position = new Vector3(0, y, -10);
+                }
+            }
                 
             yield return null;
         }

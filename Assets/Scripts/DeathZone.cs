@@ -36,10 +36,14 @@ public class DeathZone : MonoBehaviour
         //Debug.Log("Leaving Death Zone!");
         if ( collider.CompareTag("Piece") && collider.transform.position.y < transform.position.y)
         {
-            PopupText text = Instantiate(popupTextPrefab, pointSpawn.position, Quaternion.identity);
-            text.Initialize(-1);
+            Piece p = collider.GetComponent<Piece>();
+            if( !p.scored )
+            {
+                PopupText text = Instantiate(popupTextPrefab, pointSpawn.position, Quaternion.identity);
+                text.Initialize(-1);
 
-            collider.GetComponent<Piece>().Destruction(.5f);
+                p.Destruction(.5f);
+            }
         }
     }
 }

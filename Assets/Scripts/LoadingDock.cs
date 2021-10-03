@@ -16,9 +16,11 @@ public class LoadingDock : MonoBehaviour
     public bool autoDrop = false;
     public bool alternateDrops = false;
     public float dropInterval = 5f;
+    private float beamDelay = 10f;
     public float dropGravity = .15f;
     public GameObject beamPrefab;
     public GameObject lastBeam;
+    public AudioClip generateSFX;
     private bool active = false;
 
     [HideInInspector]
@@ -52,6 +54,29 @@ public class LoadingDock : MonoBehaviour
                 GenerateNextPiece();
             }
         }
+    }
+
+    public void ClearPieces()
+    {
+        active = false;
+        centerWarning.gameObject.SetActive(false);
+        lastBeam = null;
+        loadedPiece = null;
+        pieces.Clear();
+        for ( int i = 0; i < activePieces.Count; i++ )
+        {
+            activePieces[i].Destruction( 0 );
+        }
+        activePieces.Clear();
+        for ( int i = 0; i < droppedPieces.Count; i++ )
+        {
+            droppedPieces[i].Destruction(0);
+        }
+        droppedPieces.Clear();
+        ui.SetPieces(pieces.ToArray());
+        lastDropLeft = false;
+        dropTimer = 0;
+        int direction = lastDropLeft ? 1 : -1;
     }
 
     public void LoadPieces( List<Piece> p )
@@ -103,7 +128,7 @@ public class LoadingDock : MonoBehaviour
             loadedPiece.body2D.gravityScale = dropGravity;
             activePieces.Add(loadedPiece);
 
-            dropTimer = ( pieces.Count > 0 ) ? 0 : - dropInterval;
+            dropTimer = ( pieces.Count > 0 ) ? 0 : (dropInterval - beamDelay);
             // Move Queued Sprites
 
             ui.SetPieces(pieces.ToArray());
@@ -117,15 +142,15 @@ public class LoadingDock : MonoBehaviour
             }
             else
             {
-                centerWarning.Initialize(dropInterval * 2, 0);
+                centerWarning.Initialize(beamDelay, 0);
             }
         }
         else //if ( pieceCounter >= beamInterval )
         {
             lastBeam = Instantiate(beamPrefab, new Vector2(0, createAtLeft.position.y), Quaternion.identity);
 
-            GameManager.level.player.SetControl(false);
-            GameManager.level.BeamDropped();
+            Level.instance.player.SetControl(false);
+            Level.instance.BeamDropped();
             active = false;
         }
     }

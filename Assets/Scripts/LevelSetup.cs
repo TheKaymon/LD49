@@ -14,5 +14,6 @@ public class LevelSetup : ScriptableObject
         public float dropGravity;
     }
 
+    public bool showMainMenu = true;
     public List<LevelStage> levelStages;
 }

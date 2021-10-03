@@ -74,4 +74,5 @@ public class PopupWarning : MonoBehaviour
 
         gameObject.SetActive(true);
     }
+
 }

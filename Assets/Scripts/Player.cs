@@ -18,6 +18,9 @@ public class Player : MonoBehaviour
     public Piece nearbyPiece;
     public SpriteRenderer sprite;
     public LineRenderer attachLine;
+    public AudioClip grabSFX;
+    public AudioClip dropSFX;
+
     public bool paused;
 
     public float speed = 250f;
@@ -84,7 +87,7 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if ( !paused )
+        if ( !paused && !Level.instance.paused )
         {
             body2D.velocity = input * speed * Time.deltaTime;
             float lerp = ( input.x + 1 ) / 2f;
@@ -116,6 +119,10 @@ public class Player : MonoBehaviour
             piece.ToggleOutline(false);
 
             loadZone.PieceGrabbed(piece);
+
+            Audio.instance.PlaySFX(grabSFX, transform.position);
+
+            Level.instance.PieceGrabbed( piece );
         }
     }
 
@@ -140,7 +147,9 @@ public class Player : MonoBehaviour
         // Notify Load Zone
         loadZone.PieceDropped(p);
 
-        if( nearbyPiece != null )
+        Audio.instance.PlaySFX(dropSFX, transform.position);
+
+        if ( nearbyPiece != null )
         {
             GrabPiece(nearbyPiece);
         }

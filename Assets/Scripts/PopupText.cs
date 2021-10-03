@@ -6,6 +6,8 @@ using TMPro;
 public class PopupText : MonoBehaviour
 {
     public TextMeshPro text;
+    public AudioClip pointsLost;
+
     private float speed = 1.25f;
     private float lifeTime = 1.5f;
     private float timer = 0;
@@ -30,10 +32,11 @@ public class PopupText : MonoBehaviour
 
     public void Initialize( int amount ) //color
     {
-        if( amount < 0 )
+        if ( amount < 0 )
         {
             text.color = Color.red;
             text.SetText($"{amount}");
+            Audio.instance.PlaySFX(pointsLost, transform.position);
         }
         else
             text.SetText($"+{amount}");

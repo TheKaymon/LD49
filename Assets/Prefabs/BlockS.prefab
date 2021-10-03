@@ -102,6 +102,7 @@ MonoBehaviour:
   sr: {fileID: 3938793319680546291}
   body2D: {fileID: 3938793319680546289}
   outline: {fileID: 9058994192275748658}
+  rotateSFX: {fileID: 8300000, guid: bd7187582036f8746a8fd8317b71109c, type: 3}
   grabbed: 0
   released: 0
   currentAngle: 0

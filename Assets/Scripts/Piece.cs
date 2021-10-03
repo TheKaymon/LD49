@@ -9,11 +9,14 @@ public class Piece : MonoBehaviour
     public SpriteRenderer sr;
     public Rigidbody2D body2D;
     public SpriteRenderer outline;
+    public AudioClip rotateSFX;
 
     [HideInInspector]
     public bool grabbed;
     [HideInInspector]
     public bool released;
+    [HideInInspector]
+    public bool scored = false;
 
     public float currentAngle;
     private float startAngle;
@@ -70,12 +73,13 @@ public class Piece : MonoBehaviour
             targetAngle = startAngle + rotating * quarterTurn;
 
             //Debug.Log($"Rotating from {startAngle} to {targetAngle}");
+            Audio.instance.PlaySFX(rotateSFX, transform.position);
         }
     }
 
     public void Destruction( float delay )
     {
-        GameManager.level.PieceDestroyed(this);
+        Level.instance.PieceDestroyed(this);
         Destroy(gameObject, delay);
     }
 }
