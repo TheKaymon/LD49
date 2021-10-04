@@ -108,6 +108,7 @@ public class Player : MonoBehaviour
             nearbyPiece = null;
 
             // Set Physics
+            piece.col2D.isTrigger = false;
             distanceJoint.connectedBody = piece.body2D;
             currentPiece = piece;
             distanceJoint.enabled = true;
@@ -120,7 +121,7 @@ public class Player : MonoBehaviour
 
             loadZone.PieceGrabbed(piece);
 
-            Audio.instance.PlaySFX(grabSFX, transform.position);
+            //Audio.instance.PlaySFX(grabSFX, transform.position);
 
             Level.instance.PieceGrabbed( piece );
         }

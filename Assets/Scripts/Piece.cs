@@ -8,6 +8,7 @@ public class Piece : MonoBehaviour
 
     public SpriteRenderer sr;
     public Rigidbody2D body2D;
+    public Collider2D col2D;
     public SpriteRenderer outline;
     public AudioClip rotateSFX;
 

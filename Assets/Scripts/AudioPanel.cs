@@ -13,13 +13,13 @@ public class AudioPanel : MonoBehaviour
     private float musicVolume;
     private float sfxVolume;
 
-    private readonly float defaultVolume = 0.67f;
+    private readonly float defaultVolume = 0.5f;
 
     //private readonly string mainVolPref = "MainVolume";
     private readonly string musicVolPref = "MusicVolume";
     private readonly string sfxVolPref = "SfxVolume";
 
-    private void Awake()
+    private void OnEnable()
     {
         //mainVolSlider.onValueChanged.AddListener(HandleMainSliderChanged);
         musicVolSlider.onValueChanged.AddListener(HandleMusicSliderChanged);
@@ -44,9 +44,11 @@ public class AudioPanel : MonoBehaviour
 
     private void OnDisable()
     {
+        musicVolSlider.onValueChanged.RemoveAllListeners();
+        sfxVolSlider.onValueChanged.RemoveAllListeners();
         //PlayerPrefs.SetFloat(mainVolPref, mainVolume);
-        PlayerPrefs.SetFloat(musicVolPref, musicVolume);
-        PlayerPrefs.SetFloat(sfxVolPref, sfxVolume);
+        //PlayerPrefs.SetFloat(musicVolPref, musicVolume);
+        //PlayerPrefs.SetFloat(sfxVolPref, sfxVolume);
     }
 
     //public void HandleMainSliderChanged( float pct )
@@ -59,11 +61,13 @@ public class AudioPanel : MonoBehaviour
     {
         musicVolume = pct;
         Audio.instance.SetMusicVolume(pct);
+        PlayerPrefs.SetFloat(musicVolPref, pct);
     }
 
     public void HandleSfxSliderChanged( float pct )
     {
         sfxVolume = pct;
         Audio.instance.SetSfxVolume(pct);
+        PlayerPrefs.SetFloat(sfxVolPref, pct);
     }
 }

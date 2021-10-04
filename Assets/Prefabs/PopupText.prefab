@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -2}
-  m_SizeDelta: {x: 1, y: 1}
+  m_SizeDelta: {x: 2, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1657899351701183997
 MonoBehaviour:
@@ -51,7 +51,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 3902353293014106522}
-  pointsScored: {fileID: 8300000, guid: 1e9251702bc7a444ea450f492df87928, type: 3}
   pointsLost: {fileID: 8300000, guid: 490ec69b5f39cc840808511bd7bdd7af, type: 3}
 --- !u!23 &2134296011995589486
 MeshRenderer:

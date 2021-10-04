@@ -16,7 +16,7 @@ public class Audio : MonoBehaviour
 
     public AudioMixer main;
     public float minVolume = -40f;
-    public float maxVolume = 20f;
+    public float maxVolume = 10f;
     public AudioSource musicChannel;
     public List<AudioSource> sfxChannels;
 

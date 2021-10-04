@@ -14,6 +14,7 @@ public class Level : MonoBehaviour
     public LoadingDock loadZone;
     public Transform scoringZoneParent;
     public LayerMask pieceMask;
+    public TextMeshProUGUI gameOverScore;
     public TextMeshProUGUI gameOverText;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI stageText;
@@ -30,8 +31,7 @@ public class Level : MonoBehaviour
     private List<ScoringZone> scoringZones;
     private IEnumerator checkCoroutine;
     private int stage = 0;
-    private int piecesLost = 0;
-    private int gameOverCount = 3;
+    private int lives = 10;
     private List<Piece> countedPieces;
     private int levelScore;
     //private int totalScore;
@@ -87,7 +87,7 @@ public class Level : MonoBehaviour
         StopAllCoroutines();
         loadZone.ClearPieces();
         levelScore = 0;
-        piecesLost = 0;
+        lives = 10;
         stage = 0;
         countedPieces.Clear();
         paused = false;
@@ -110,9 +110,20 @@ public class Level : MonoBehaviour
 
     public void RestartGame( bool showMainMenu )
     {
-        levelSettings.showMainMenu = showMainMenu;
-        Time.timeScale = 1;
-        SceneManager.LoadScene(0);
+        // WebGL
+        //levelSettings.showMainMenu = showMainMenu;
+        //Time.timeScale = 1;
+        //SceneManager.LoadScene(0);
+
+        //Windows
+        if ( !showMainMenu )
+        {
+            levelSettings.showMainMenu = showMainMenu;
+            Time.timeScale = 1;
+            SceneManager.LoadScene(0);
+        }
+        else
+            Application.Quit();
     }
 
     public void PieceGrabbed( Piece p )
@@ -128,12 +139,13 @@ public class Level : MonoBehaviour
     {
         loadZone.PieceDestroyed(p);
         levelScore--;
-        piecesLost++;
-        livesText.SetText((gameOverCount-piecesLost).ToString());
+        scoreText.SetText(levelScore.ToString());
+        lives--;
+        livesText.SetText(lives.ToString());
 
-        if ( piecesLost > gameOverCount )
+        if ( lives <= 0 )
         {
-            GameOver();
+            GameOver("Game Over");
         }
     }
 
@@ -152,20 +164,41 @@ public class Level : MonoBehaviour
         // Generate Pieces
         List<Piece> pieces = new List<Piece>();
         int lastType = -1;
-        int type;
         int lastIndex = levelSettings.levelStages[stage].lastBlockAvailable;
-        int typeCount = lastIndex + 1;
+        //List<Piece> available = new List<Piece>();
+        //int typeCount = lastIndex + 1;
+        int type = Random.Range(0, lastIndex + 1);
+        //int times = ( levelSettings.levelStages[stage].numBlocks / typeCount ) + 1;
+
         for ( int i = 0; i < levelSettings.levelStages[stage].numBlocks; i++ )
         {
-            type = Random.Range(0, typeCount);
-            if( type == lastType )
-            {
-                type = (type + Random.Range(0, lastIndex )) % typeCount;
-            }
-            lastType = type;
             pieces.Add(pieceTypes[type]);
+            lastType = type;
+            //int rand = Random.Range(1, lastIndex);
+            //type = ( type + rand ) % lastIndex;
+            type = ( type + Random.Range(1, lastIndex) ) % lastIndex;
+            //Debug.Log($"Generated {type} from {lastType} and {rand}");
+            //if ( type == lastType )
+            //{
+            //    type = ( type + Random.Range(0, lastIndex) ) % typeCount;
+            //}
+            //lastType = type;
+
             //Debug.Log($"Adding piece {pieceTypes[type]}");
         }
+
+        //for ( int i = 0; i < levelSettings.levelStages[stage].numBlocks; i++ )
+        //{
+        //    type = Random.Range(0, typeCount);
+        //    if( type == lastType )
+        //    {
+        //        type = (type + Random.Range(0, lastIndex )) % typeCount;
+        //    }
+        //    lastType = type;
+        //    pieces.Add(pieceTypes[type]);
+        //    //Debug.Log($"Adding piece {pieceTypes[type]}");
+        //}
+
         // Set up Loading Zone
         loadZone.dropInterval = levelSettings.levelStages[stage].dropInterval;
         loadZone.dropGravity = levelSettings.levelStages[stage].dropGravity;
@@ -174,10 +207,11 @@ public class Level : MonoBehaviour
         player.paused = false;
     }
 
-    private void GameOver()
+    private void GameOver( string message )
     {
         paused = true;
-        gameOverText.SetText($"Score: {levelScore}");
+        Time.timeScale = 0;
+        gameOverScore.SetText($"Score: {levelScore}");
         gameOverUI.SetActive(true);
         Debug.Log($"Level Score is: {levelScore}");
     }
@@ -186,9 +220,14 @@ public class Level : MonoBehaviour
     {
         StopAllCoroutines();
 
-        if ( stage < levelSettings.levelStages.Count - 1 )
-            stage++;
-        StartStage();
+        stage++;
+
+        if ( stage >= levelSettings.levelStages.Count )
+        {
+            GameOver("Game Complete!");
+        }
+        else
+            StartStage();
     }
 
     private IEnumerator CheckForMotion()
