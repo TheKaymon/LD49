@@ -138,8 +138,8 @@ public class Level : MonoBehaviour
     public void PieceDestroyed( Piece p )
     {
         loadZone.PieceDestroyed(p);
-        levelScore--;
-        scoreText.SetText(levelScore.ToString());
+        //levelScore--;
+        //scoreText.SetText(levelScore.ToString());
         lives--;
         livesText.SetText(lives.ToString());
 
@@ -151,7 +151,7 @@ public class Level : MonoBehaviour
 
     public void BeamDropped()
     {
-        Debug.Log("Beam Dropped");
+        //Debug.Log("Beam Dropped");
         //for ( int i = 0; i < loadZone.droppedPieces.Count; i++ )
         //{
         //    loadZone.droppedPieces[i].body2D.constraints = RigidbodyConstraints2D.None;
@@ -209,9 +209,12 @@ public class Level : MonoBehaviour
 
     private void GameOver( string message )
     {
+        StopAllCoroutines();
+
         paused = true;
         Time.timeScale = 0;
         gameOverScore.SetText($"Score: {levelScore}");
+        gameOverText.SetText(message);
         gameOverUI.SetActive(true);
         Debug.Log($"Level Score is: {levelScore}");
     }
@@ -258,7 +261,7 @@ public class Level : MonoBehaviour
 
     private IEnumerator CalculateRoundScore()
     {
-        Debug.Log("Calculating Round Score");
+        //Debug.Log("Calculating Round Score");
         Piece p;
         Piece last = null;
         int hits = 0;
@@ -338,7 +341,7 @@ public class Level : MonoBehaviour
 
     private IEnumerator MoveCamera()
     {
-        Debug.Log("Moving Camera");
+        //Debug.Log("Moving Camera");
         float yTarg = loadZone.lastBeam.GetComponent<BoxCollider2D>().bounds.min.y + 5.5f;
         float yStart = mainCam.transform.position.y;
         float timer = 0f;

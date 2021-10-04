@@ -962,6 +962,14 @@ PrefabInstance:
       propertyPath: m_text
       value: 128
       objectReference: {fileID: 0}
+    - target: {fileID: 6004333852294478914, guid: 14f982c634916f541a39ba131a31eebc, type: 3}
+      propertyPath: m_Size.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6004333852294478914, guid: 14f982c634916f541a39ba131a31eebc, type: 3}
+      propertyPath: m_Offset.y
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6004333852294478916, guid: 14f982c634916f541a39ba131a31eebc, type: 3}
       propertyPath: m_RootOrder
       value: 10
@@ -5366,8 +5374,8 @@ MonoBehaviour:
   pieceMask:
     serializedVersion: 2
     m_Bits: 8
-  gameOverScore: {fileID: 0}
-  gameOverText: {fileID: 432662201}
+  gameOverScore: {fileID: 432662201}
+  gameOverText: {fileID: 1808712056}
   scoreText: {fileID: 1121505463}
   stageText: {fileID: 1447168664}
   livesText: {fileID: 847552502}

@@ -16,41 +16,29 @@ MonoBehaviour:
   levelStages:
   - numBlocks: 8
     lastBlockAvailable: 4
-    dropInterval: 8
+    dropInterval: 7
     dropGravity: 0.1
-  - numBlocks: 9
-    lastBlockAvailable: 5
-    dropInterval: 7.5
-    dropGravity: 0.125
   - numBlocks: 10
-    lastBlockAvailable: 6
-    dropInterval: 7
-    dropGravity: 0.125
-  - numBlocks: 11
-    lastBlockAvailable: 7
-    dropInterval: 7
+    lastBlockAvailable: 5
+    dropInterval: 6
     dropGravity: 0.15
   - numBlocks: 12
-    lastBlockAvailable: 8
-    dropInterval: 6.5
-    dropGravity: 0.15
+    lastBlockAvailable: 7
+    dropInterval: 6
+    dropGravity: 0.2
   - numBlocks: 12
     lastBlockAvailable: 9
-    dropInterval: 6.5
-    dropGravity: 0.175
-  - numBlocks: 13
-    lastBlockAvailable: 10
-    dropInterval: 6
-    dropGravity: 0.175
-  - numBlocks: 14
-    lastBlockAvailable: 11
-    dropInterval: 5.5
-    dropGravity: 0.175
-  - numBlocks: 15
-    lastBlockAvailable: 11
-    dropInterval: 5
-    dropGravity: 0.175
-  - numBlocks: 15
-    lastBlockAvailable: 11
     dropInterval: 5
     dropGravity: 0.2
+  - numBlocks: 14
+    lastBlockAvailable: 11
+    dropInterval: 5
+    dropGravity: 0.25
+  - numBlocks: 14
+    lastBlockAvailable: 11
+    dropInterval: 4
+    dropGravity: 0.25
+  - numBlocks: 15
+    lastBlockAvailable: 11
+    dropInterval: 4
+    dropGravity: 0.3
